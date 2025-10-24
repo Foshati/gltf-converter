@@ -13,6 +13,9 @@ bun.lock
 # testing
 /coverage
 
+public/*
+public
+
 # next.js
 /.next/
 /out/
