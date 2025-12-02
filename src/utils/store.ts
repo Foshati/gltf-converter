@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
-import { gltfjsx } from 'gltfjsx'
+import { parse } from 'gltfjsx'
 import type { Config } from '@/types'
 
 interface StoreState {
@@ -68,7 +68,7 @@ const useStore = create<StoreState>((set, get) => ({
       // Generate proper React code using gltfjsx
       let code = ''
       try {
-        code = await gltfjsx(firstBuffer[1], {
+        code = await parse(firstBuffer[1], {
           types: config.types,
           verbose: config.verbose,
           shadows: config.shadows,
@@ -117,7 +117,5 @@ useGLTF.preload('/${fileName}')`
     }
   },
 }))
-
-export default useStore
 
 export default useStore
