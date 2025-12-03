@@ -65,10 +65,18 @@ const useStore = create<StoreState>((set, get) => ({
         })
       })
 
+      // Update scene state immediately after parsing
+      set({
+        scene: result.scene,
+        animations: !!(result.animations && result.animations.length),
+      })
+      console.log('Scene loaded successfully')
+
       // Generate proper React code using gltfjsx
       let code = ''
       try {
-        code = await parse(firstBuffer[1], {
+        console.log('Generating JSX code...')
+        code = await parse(result, {
           types: config.types,
           verbose: config.verbose,
           shadows: config.shadows,
@@ -80,6 +88,7 @@ const useStore = create<StoreState>((set, get) => ({
           instance: config.instance,
           instanceall: config.instanceall,
         })
+        console.log('JSX code generated')
       } catch (gltfjsxError) {
         console.warn('gltfjsx failed, using fallback:', gltfjsxError)
         // Fallback code generation
@@ -99,18 +108,14 @@ export function ${componentName}(props) {
 useGLTF.preload('/${fileName}')`
       }
 
-      // Update state
-      set({
-        code,
-        scene: result.scene,
-        animations: !!(result.animations && result.animations.length),
-      })
+      // Update code state
+      set({ code })
       
     } catch (error) {
       console.error('Error loading GLTF:', error)
       // Set fallback state
       set({
-        code: '// Error loading GLTF file',
+        code: '// Error loading GLTF file: ' + (error as Error).message,
         scene: null,
         animations: false,
       })
